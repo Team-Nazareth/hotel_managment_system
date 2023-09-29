@@ -191,3 +191,5 @@ ALTER TABLE `Order` ADD FOREIGN KEY (`guest_id`) REFERENCES `Guest` (`guest_id`)
 ALTER TABLE `Order` ADD FOREIGN KEY (`table_id`) REFERENCES `Table` (`table_id`);
 
 ALTER TABLE `Menu_order` ADD FOREIGN KEY (`menu_id`) REFERENCES `Menu` (`menu_id`);
+
+-- miki
