@@ -1,14 +1,12 @@
-DROP DATABASE IF exists `HOTEL_MANAGMENT_SYSTEM`;
+DROP DATABASE IF exists `testhrs`;
 
-CREATE DATABASE HOTEL_MANAGMENT_SYSTEM;
+CREATE DATABASE testHRS;
 
-USE HOTEL_MANAGMENT_SYSTEM;
+USE testHRS;
 
 CREATE TABLE `Room` (
   `room_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type_id` INT NOT NULL,
-  `room_number` INT UNIQUE,
-  `location` char(32),
   `is_available` boolean NOT NULL
 );
 
@@ -22,7 +20,7 @@ CREATE TABLE `Room_type` (
 
 CREATE TABLE `Room_Amenity` (
   `amenity_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `amenity_name` varchar(20),
+  `amenity_name` varchar(30),
   `description` varchar(50)
 );
 
@@ -37,9 +35,9 @@ CREATE TABLE `Guest` (
   `guest_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `username` varchar(20) UNIQUE NOT NULL,
   `password` varchar(20) NOT NULL,
-  `first_name` char(10) NOT NULL,
-  `last_name` char(10),
-  `email` char(20),
+  `first_name` varchar(20) NOT NULL,
+  `last_name` varchar(20),
+  `email` varchar(30),
   `birth_date` DATE,
   `sex` char(1),
   `phone_num` char(9) NOT NULL
@@ -49,17 +47,16 @@ CREATE TABLE `Reservation` (
   `reservation_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `guest_id` int NOT NULL,
   `room_id` int NOT NULL,
-  `checkin_date` DATETIME,
+  `checkin_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `checkout_date` DATETIME,
-  `num_of_guest` int,
   `special_request` int,
   `cancel_date` DATETIME
 );
 
 CREATE TABLE `Special_request` (
   `spId` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `name` char(10),
-  `description` char(20)
+  `name` varchar(30),
+  `description` varchar(50)
 );
 
 CREATE TABLE `Staff` (
@@ -67,9 +64,9 @@ CREATE TABLE `Staff` (
   `username` varchar(20) UNIQUE NOT NULL,
   `password` varchar(20) NOT NULL,
   `role_id` INT NOT NULL,
-  `first_name` char(10) NOT NULL,
-  `last_name` char(10),
-  `email` char(20),
+  `first_name` varchar(20) NOT NULL,
+  `last_name` varchar(20),
+  `email` varchar(30),
   `birth_date` DATE,
   `sex` char(1),
   `phone_num` char(9) NOT NULL,
@@ -79,7 +76,7 @@ CREATE TABLE `Staff` (
 
 CREATE TABLE `Staff_role` (
   `role_id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `name` char(10),
+  `name` char(30),
   `description` char(50)
 );
 
@@ -91,7 +88,7 @@ CREATE TABLE `Invoice` (
   `order_id` INT,
   `invoice_total` INT NOT NULL,
   `payment_total` INT ,
-  `invoice_date` TIMESTAMP,
+  `invoice_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `payment_date` DATETIME
 );
 
@@ -99,27 +96,24 @@ CREATE TABLE `Invoice` (
 CREATE TABLE `Staff_assignment` (
   `staff_id` int NOT NULL,
   `reservation_id` int NOT NULL,
-  `assignment_date` DATETIME,
+  `assignment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `notes` varchar(50),
   PRIMARY KEY(staff_id,reservation_id)
 );
 
 CREATE TABLE `Payment` (
   `payment_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `guest_id` INT,
-  `reservation_id` int,
-  `order_id` INT,
   `invoice_id` INT NOT NULL,
   `payment_method_id` int NOT NULL,
   `amount` int NOT NULL,
-  `payment_date` TIMESTAMP
+  `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `Payment_method` (
   `payment_method_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `name` varchar(20),
+  `name` varchar(30),
   `processing_fee` FLOAT,
-  `description` varchar(30)
+  `description` varchar(60)
 );
 
 CREATE TABLE `Menu` (
@@ -140,7 +134,7 @@ CREATE TABLE `Order` (
     guest_id INT NOT NULL,
     table_id INT,
     quantity INT NOT NULL DEFAULT 1 ,
-    order_date TIMESTAMP,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	cancel_date DATETIME
 );
 
@@ -148,8 +142,21 @@ CREATE TABLE `Order` (
 CREATE TABLE `Menu_order` (
 	menu_id INT NOT NULL,
     order_id INT NOT NULL,
-    order_date DATETIME,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (menu_id, order_id)
+);
+
+-- audit table
+
+CREATE TABLE AuditLog (
+  log_id INT AUTO_INCREMENT PRIMARY KEY,
+  table_name VARCHAR(255) NOT NULL,
+  record_id INT NOT NULL, -- PK of the target table
+  action VARCHAR(50) NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  user_id INT NOT NULL,
+  old_values JSON,
+  new_values JSON
 );
 
 ALTER TABLE `Room` ADD FOREIGN KEY (`type_id`) REFERENCES `Room_type` (`type_id`);
@@ -176,13 +183,7 @@ ALTER TABLE `Staff_assignment` ADD FOREIGN KEY (`staff_id`) REFERENCES `Staff` (
 
 ALTER TABLE `Staff_assignment` ADD FOREIGN KEY (`reservation_id`) REFERENCES `Reservation` (`reservation_id`);
 
-ALTER TABLE `Payment` ADD FOREIGN KEY (`reservation_id`) REFERENCES `Reservation` (`reservation_id`);
-
 ALTER TABLE `Payment` ADD FOREIGN KEY (`payment_method_id`) REFERENCES `Payment_method` (`payment_method_id`);
-
-ALTER TABLE `Payment` ADD FOREIGN KEY (`order_id`) REFERENCES `Order` (`order_id`);
-
-ALTER TABLE `Payment` ADD FOREIGN KEY (`guest_id`) REFERENCES `Guest` (`guest_id`);
 
 ALTER TABLE `Payment` ADD FOREIGN KEY (`invoice_id`) REFERENCES `Invoice` (`invoice_id`);
 
@@ -192,4 +193,4 @@ ALTER TABLE `Order` ADD FOREIGN KEY (`table_id`) REFERENCES `Table` (`table_id`)
 
 ALTER TABLE `Menu_order` ADD FOREIGN KEY (`menu_id`) REFERENCES `Menu` (`menu_id`);
 
--- miki
+ALTER TABLE `Menu_order` ADD FOREIGN KEY (`order_id`) REFERENCES `Order` (`order_id`);
