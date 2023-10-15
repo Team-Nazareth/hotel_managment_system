@@ -195,7 +195,7 @@ public class LoginUI implements ActionListener {
 	
 	public void imageManger(JPanel p) {
 		
-		icon = new ImageIcon("./Assets/jason.jpg");
+		icon = new ImageIcon("/Assets/jason.jpg");
 
         // Get the image from the ImageIcon
         image = icon.getImage();
