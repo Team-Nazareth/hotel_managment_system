@@ -1,0 +1,8 @@
+--shows the menu 
+DELIMITER //
+DROP PROCEDURE IF EXISTS get_menu;
+CREATE PROCEDURE get_menu()
+BEGIN
+SELECT * FROM Menu;
+END //
+DELIMITER ;
