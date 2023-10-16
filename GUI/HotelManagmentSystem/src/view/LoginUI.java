@@ -6,12 +6,13 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class LoginUI implements ActionListener {
-	JPanel loginPanel, FormPanel, guestFormPanel, staffFormPanel;
+	JFrame theFrame;
+	JPanel loginPanel, FormPanel, guestFormPanel, staffFormPanel, guestSignUpPanel;
 	CardLayout cardLayout;
 	ImageIcon icon ;
 	Image image;
 	JLabel greetLabel, nameLabel, pswdLabel, access_levelLabel;
-	JButton loginBtn, signupBtn, staffOptionBtn, guestOptionBtn;
+	JButton loginStaffBtn, loginGuestBtn, signupBtn, staffOptionBtn, guestOptionBtn;
 	JTextField username;
 	JPasswordField password;
 	JComboBox<String> access_level;
@@ -19,10 +20,14 @@ public class LoginUI implements ActionListener {
 	
 	
 	public LoginUI(JFrame f) {
+		// passed from container class
+		theFrame = f;
+		//end
 		loginPanel = new JPanel(new BorderLayout());
 		FormPanel = new JPanel();
 		guestFormPanel = new JPanel(new BorderLayout());
 		staffFormPanel = new JPanel(new BorderLayout());
+		guestSignUpPanel = new JPanel(new BorderLayout());
 		
 		cardLayout = new CardLayout();
 		FormPanel.setLayout(cardLayout);
@@ -30,16 +35,20 @@ public class LoginUI implements ActionListener {
 		// guest and staff are cuplied to other service
 		FormPanel.add(guestFormPanel, "guest");
 		FormPanel.add(staffFormPanel, "staff");
+		FormPanel.add(guestSignUpPanel, "signup");
 		
 		this.imageManger(loginPanel);
 		this.guestForm(guestFormPanel);
 		this.staffForm(staffFormPanel);
 		
+		// formPanel and cardLayout passed for navigation purpose
+		new SignUpUI(guestSignUpPanel, FormPanel, cardLayout );
+		
 		cardLayout.show(FormPanel, "guest");
 		loginPanel.add(FormPanel, BorderLayout.WEST);
 
 //		loginPanel.add(staffFormPanel, BorderLayout.WEST);
-		f.add(loginPanel);
+		theFrame.add(loginPanel);
 		
 	}
 	
@@ -62,16 +71,17 @@ public class LoginUI implements ActionListener {
 		password.setPreferredSize(new Dimension(200,30));
 
 		// login Btn
-		loginBtn = new JButton("Login");
-		loginBtn.setPreferredSize(new Dimension(200,30));
-		loginBtn.setBackground(new Color(20, 20, 25));
-		loginBtn.setForeground(new Color(255,255,255));
-		loginBtn.addActionListener(this);
+		loginGuestBtn = new JButton("Login");
+		loginGuestBtn.setPreferredSize(new Dimension(200,30));
+		loginGuestBtn.setBackground(new Color(20, 20, 25));
+		loginGuestBtn.setForeground(new Color(255,255,255));
+		loginGuestBtn.addActionListener(this);
 		
 		// signup btn
 		signupBtn = new JButton("Sign up");
 		signupBtn.setPreferredSize(new Dimension(200,30));
-		signupBtn.setBackground(new Color(255, 200, 255));
+		signupBtn.setBackground(new Color(76, 110, 255));
+		signupBtn.setForeground(new Color(255,255,255));
 		signupBtn.addActionListener(this);
 		
 		guestOptionBtn = new JButton("staff?");
@@ -102,7 +112,7 @@ public class LoginUI implements ActionListener {
 		// login button
 		constrients.gridx = 1;
 		constrients.gridy = 3;
-		subPanel.add(loginBtn, constrients);
+		subPanel.add(loginGuestBtn, constrients);
 		
 		constrients.gridx = 1;
 		constrients.gridy = 4;
@@ -135,11 +145,11 @@ public class LoginUI implements ActionListener {
 		password.setPreferredSize(new Dimension(300,30));
 
 		
-		loginBtn = new JButton("Login");
-		loginBtn.setPreferredSize(new Dimension(200,30));
-		loginBtn.setBackground(new Color(20, 20, 25));
-		loginBtn.setForeground(new Color(255,255,255));
-		loginBtn.addActionListener(this);
+		loginStaffBtn = new JButton("Login");
+		loginStaffBtn.setPreferredSize(new Dimension(200,30));
+		loginStaffBtn.setBackground(new Color(20, 20, 25));
+		loginStaffBtn.setForeground(new Color(255,255,255));
+		loginStaffBtn.addActionListener(this);
 		
 		String[] options = {"Manager", "Reception", "Regular staff"};
 		
@@ -184,7 +194,7 @@ public class LoginUI implements ActionListener {
 		// login button
 		constrients.gridx = 1;
 		constrients.gridy = 4;
-		subPanel.add(loginBtn, constrients);
+		subPanel.add(loginStaffBtn, constrients);
 
 
 		p.add(subPanel, BorderLayout.CENTER);
@@ -195,7 +205,7 @@ public class LoginUI implements ActionListener {
 	
 	public void imageManger(JPanel p) {
 		
-		icon = new ImageIcon("/Assets/jason.jpg");
+		icon = new ImageIcon("./Assets/jason.jpg");
 
         // Get the image from the ImageIcon
         image = icon.getImage();
@@ -206,16 +216,34 @@ public class LoginUI implements ActionListener {
         p.add(label, BorderLayout.EAST);
 	}
 	
+	private void repainter() {
+		theFrame.remove(loginPanel);
+		theFrame.revalidate();
+		theFrame.repaint();
+	}
+	
+	public void loginHandler(String username, String Password) {
+		repainter();
+	}
+	
+	public void loginHandler(String username, String Password, String access_level) {
+		repainter();
+	}
+	
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == staffOptionBtn) {
 			cardLayout.show(FormPanel, "guest");
 		} else if(e.getSource() == guestOptionBtn) {
 			cardLayout.show(FormPanel, "staff");
-		} else if(e.getSource() == loginBtn ) {
-			System.out.println("login pressed");
+		} else if(e.getSource() == loginGuestBtn ) {
+			System.out.println("guest login pressed");
+			loginHandler("","");
+		} else if(e.getSource() == loginStaffBtn) {
+			System.out.println("staff login pressed");
+			loginHandler("","", "");
 		} else if(e.getSource() == signupBtn ) {
-			System.out.println("signup pressed");
+			cardLayout.show(FormPanel, "signup");
 		}
 	}
 }
