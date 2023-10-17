@@ -5,4 +5,5 @@ public class roomData {
 	public Double Price;
 	public String Desc;
 	public Integer room_id;
+	public Integer capacity;
 }
