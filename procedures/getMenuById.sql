@@ -5,6 +5,6 @@ CREATE PROCEDURE get_menu_by_id(
        IN id INT
 )
 BEGIN
-  SELECT * FROM Menu WHERE id=room_id;
+  SELECT * FROM Menu WHERE menu_id=id;
 END //
 DELIMITER ;
