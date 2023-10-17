@@ -97,11 +97,11 @@ VALUES
     
     
 -- insert into reservation
-INSERT INTO reservation (guest_id, room_id, checkin_date, checkout_date, num_of_guest, special_request, cancel_date) 
+INSERT INTO reservation (guest_id, room_id, checkout_date, special_request, cancel_date) 
 VALUES 
-		(1, 1, '2023-01-10 14:00:00', '2023-01-15 12:00:00', 2, 2, NULL),
-		(2, 2, '2023-02-05 15:30:00', '2023-02-10 11:00:00', 1, 1, NULL),
-		(3, 3, '2023-03-20 12:00:00', '2023-03-25 10:00:00', 4, 3, NULL);
+		(1, 1, '2023-01-15 12:00:00', 2, NULL),
+		(2, 2, '2023-02-10 11:00:00', 1, NULL),
+		(3, 3, '2023-03-25 10:00:00', 3, NULL);
         
 -- insert into paymnet_methods
 INSERT INTO payment_method (name, processing_fee, description) 

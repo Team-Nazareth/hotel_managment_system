@@ -2,8 +2,13 @@ package view;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
+
+import constants.FilePaths;
+// custom packages
+import view.GuestView.GuestMainView;
+import util.ImageManager;
+import util.ImageManager.*;
 
 public class LoginUI implements ActionListener {
 	JFrame theFrame;
@@ -52,7 +57,7 @@ public class LoginUI implements ActionListener {
 		
 	}
 	
-	public void guestForm(JPanel p) {
+	private void guestForm(JPanel p) {
 		
 		JPanel subPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints constrients = new GridBagConstraints();
@@ -125,7 +130,7 @@ public class LoginUI implements ActionListener {
 		
 	}
 	
-	public void staffForm(JPanel p) {
+	private void staffForm(JPanel p) {
 		
 		JPanel subPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints constrients = new GridBagConstraints();
@@ -204,46 +209,48 @@ public class LoginUI implements ActionListener {
 	}
 	
 	public void imageManger(JPanel p) {
-		
-		icon = new ImageIcon("./Assets/jason.jpg");
-
-        // Get the image from the ImageIcon
-        image = icon.getImage();
-
-        // Create a JLabel and set the image as its icon
-        JLabel label = new JLabel(new ImageIcon(image));
+        
+		ImageManager imageManger = new ImageManager();
+		JLabel label = imageManger.imageFiller(FilePaths.loginImage, null);
+        
         
         p.add(label, BorderLayout.EAST);
 	}
 	
-	private void repainter() {
-		theFrame.remove(loginPanel);
-		theFrame.revalidate();
-		theFrame.repaint();
+	private void loginHandler(String username, String Password) {
+		
+		MainView.panelRemover(theFrame, loginPanel);
+		// if authorized
+		new GuestMainView(theFrame);
+		
+		MainView.repainter(theFrame);
 	}
 	
-	public void loginHandler(String username, String Password) {
-		repainter();
-	}
-	
-	public void loginHandler(String username, String Password, String access_level) {
-		repainter();
+	private void loginHandler(String username, String Password, String access_level) {
+		MainView.panelRemover(theFrame, loginPanel);
+		// if authorized
+		
+		MainView.repainter(theFrame);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == staffOptionBtn) {
 			cardLayout.show(FormPanel, "guest");
+			
 		} else if(e.getSource() == guestOptionBtn) {
 			cardLayout.show(FormPanel, "staff");
+			
 		} else if(e.getSource() == loginGuestBtn ) {
 			System.out.println("guest login pressed");
 			loginHandler("","");
+			
 		} else if(e.getSource() == loginStaffBtn) {
 			System.out.println("staff login pressed");
 			loginHandler("","", "");
 		} else if(e.getSource() == signupBtn ) {
 			cardLayout.show(FormPanel, "signup");
+			
 		}
 	}
 }
