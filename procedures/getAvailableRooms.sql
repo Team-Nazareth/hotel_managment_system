@@ -4,7 +4,7 @@ DROP PROCEDURE IF EXISTS get_available_rooms;
 CREATE PROCEDURE get_available_rooms()
 BEGIN
   SELECT * FROM Room r JOIN Room_type rt
-  ON r.type_id=rt.type_id;
+  ON r.type_id=rt.type_id WHERE is_available=1;
 END //
 DELIMITER ;
 
