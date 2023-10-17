@@ -1,5 +1,5 @@
--- CREATE USER 'manager'@'%' IDENTI-- FIED BY 'managerpass';
--- GRANT ALL PRIVILEGES ON testhrs.* TO 'manager'@'%';
+CREATE USER 'manager'@'%' IDENTIFIED BY 'managerpass';
+GRANT ALL PRIVILEGES ON testhrs.* TO 'manager'@'%';
 
 CREATE USER 'reception'@'%' IDENTIFIED BY 'receptionpass';
 GRANT ALL PRIVILEGES ON testhrs.guest  TO 'reception'@'%';
