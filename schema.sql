@@ -89,7 +89,7 @@ CREATE TABLE `Invoice` (
   `invoice_total` INT NOT NULL,
   `payment_total` INT ,
   `invoice_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `payment_date` DATETIME
+  `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- JUNCTION TABLE
@@ -154,9 +154,7 @@ CREATE TABLE AuditLog (
   record_id INT NOT NULL, -- PK of the target table
   action VARCHAR(50) NOT NULL,
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  user_id INT NOT NULL,
-  old_values JSON,
-  new_values JSON
+  user_id INT NOT NULL
 );
 
 ALTER TABLE `Room` ADD FOREIGN KEY (`type_id`) REFERENCES `Room_type` (`type_id`);
