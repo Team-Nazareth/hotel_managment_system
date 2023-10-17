@@ -34,7 +34,7 @@ CREATE TABLE `Room_type_amenity` (
 CREATE TABLE `Guest` (
   `guest_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `username` varchar(20) UNIQUE NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(64) NOT NULL,
   `first_name` varchar(20) NOT NULL,
   `last_name` varchar(20),
   `email` varchar(30),
@@ -62,7 +62,7 @@ CREATE TABLE `Special_request` (
 CREATE TABLE `Staff` (
   `staff_id` int UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `username` varchar(20) UNIQUE NOT NULL,
-  `password` varchar(20) NOT NULL,
+  `password` varchar(64) NOT NULL,
   `role_id` INT NOT NULL,
   `first_name` varchar(20) NOT NULL,
   `last_name` varchar(20),
