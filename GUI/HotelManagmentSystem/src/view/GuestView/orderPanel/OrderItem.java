@@ -12,22 +12,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 // custom package
+import Model.OrderData;
 import util.FileHandler;
 
-//import view.GuestView.orderPanel.OrderData.Category;
-
-class OrderData {
-	public String item_name;
-    public Integer qty;
-    public Integer menu_id;
-    public Double unit_price;
-    public Category category;
-
-    public enum Category {
-        DRINK,
-        FOOD
-    }
-}
 
 class OrderItem implements ActionListener {
 	JButton removeBtn;

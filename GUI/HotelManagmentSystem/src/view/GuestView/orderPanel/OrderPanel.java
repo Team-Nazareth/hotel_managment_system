@@ -5,6 +5,9 @@ import java.awt.FlowLayout;
 
 import javax.swing.*;
 
+// local package
+import Model.OrderData;
+
 
 
 public class OrderPanel {
@@ -44,12 +47,12 @@ public class OrderPanel {
 	}
 	
 	public void itemWrapper(JPanel p) {
+		// fetch from db
 		for(int i = 0; i < 5; i++) {
 			
 			OrderData order = itemFill("item name", 1, 10.23 + i, "food", i);
 	        
 			new OrderItem(p, order);
-//			p.add(itemPanel);
 		}
 
 	}
