@@ -1,14 +1,6 @@
--- trigger for reserving a room
-
--- generate invoice when checkout date provided
-
 DELIMITER //
 
-DROP TRIGGER IF EXISTS reservation_AFTER_INSERT;
-CREATE TRIGGER before_reserving_room
-BEFORE INSERT ON reservation
-FOR EACH ROW
-BEGIN
+CREATE DEFINER=`root`@`localhost` TRIGGER `reservation_AFTER_INSERT` AFTER INSERT ON `reservation` FOR EACH ROW BEGIN
     DECLARE invoice_total int;
     DECLARE unit_price int;
     
@@ -27,6 +19,4 @@ BEGIN
         INSERT INTO invoice (guest_id, reservation_id, invoice_total, payment_total, invoice_date)
         VALUES (NEW.guest_id, NEW.reservation_id, invoice_total , 0, NOW());
     END IF;
-END //
-
-DELIMITER ;
+END

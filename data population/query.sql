@@ -1,4 +1,4 @@
-use testhrs;
+use hotel_managment_system;
 
 SELECT * FROM room;
 

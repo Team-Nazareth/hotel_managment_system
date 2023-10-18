@@ -1,8 +1,8 @@
-DROP DATABASE IF exists `testhrs`;
+DROP DATABASE IF exists `hotel_managment_system`;
 
-CREATE DATABASE testHRS;
+CREATE DATABASE hotel_managment_system;
 
-USE testHRS;
+USE hotel_managment_system;
 
 CREATE TABLE `Room` (
   `room_id` INT UNIQUE PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -154,7 +154,7 @@ CREATE TABLE AuditLog (
   record_id INT NOT NULL, -- PK of the target table
   action VARCHAR(50) NOT NULL,
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  user_id INT NOT NULL
+  user_id varchar(50) NOT NULL
 );
 
 ALTER TABLE `Room` ADD FOREIGN KEY (`type_id`) REFERENCES `Room_type` (`type_id`);

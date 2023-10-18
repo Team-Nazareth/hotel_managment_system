@@ -1,3 +1,5 @@
+DELIMITER //
+
 CREATE DEFINER=`root`@`localhost` TRIGGER `menu_order_AFTER_INSERT` AFTER INSERT ON `menu_order` FOR EACH ROW BEGIN
 	-- generate invoice on menu order
     DECLARE total_price float;

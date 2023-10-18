@@ -1,3 +1,5 @@
+delimiter //
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_guest`(
     IN pswd varchar(20),
     IN f_name varchar(20),

@@ -1,3 +1,5 @@
+delimiter //
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `make_payment`(
 		IN invoiceId int,
         IN  p_m_id int,

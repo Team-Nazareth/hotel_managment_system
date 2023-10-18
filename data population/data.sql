@@ -1,4 +1,4 @@
-use testhrs;
+use hotel_managment_system;
 
 -- code(insertion) order does matter
 
@@ -113,36 +113,36 @@ VALUES
 -- insert into order
 INSERT INTO `order` (guest_id, table_id, quantity, cancel_date) 
 VALUES 
-	(1, 1, 2,  NULL),
-	(2, 2, 1,  NULL),
-    (2, 3, 1, NULL),
-    (1, 4, 1,  NULL),
-    (3, 3, 3,  '2023-10-13 20:20:00');
+	(1, 6, 2,  NULL),
+	(2, 8, 1,  NULL),
+    (2, 7, 1, NULL),
+    (1, 9, 1,  NULL),
+    (3, 10, 3,  '2023-10-13 20:20:00');
     
 -- insert into menu order
 INSERT INTO menu_order (menu_id, order_id) 
 VALUES 
-(1, 1),
-(2, 1),
-(3, 2),
-(4, 3),
-(5, 3),
-(6, 3);
+(1, 6),
+(2, 6),
+(3, 6),
+(4, 9),
+(5, 9),
+(6, 10);
 
  -- insert into invoice
-INSERT INTO invoice (guest_id, reservation_id, order_id, invoice_total, payment_total, invoice_date, payment_date) 
-VALUES 
-	(1, 1, 3, 500, 0, '2023-10-13 12:00:00', NULL),
-	(2, 2, 2, 750, 250, '2023-10-14 10:30:00', '2023-10-14 16:45:00'),
-	(3, 3, 1, 1000, 1000, '2023-10-15 15:45:00', '2023-10-15 15:45:00');
-    
+-- INSERT INTO invoice (guest_id, reservation_id, order_id, invoice_total, payment_total, invoice_date, payment_date) 
+-- VALUES 
+-- 	(1, 1, 3, 500, 0, '2023-10-13 12:00:00', NULL),
+-- 	(2, 2, 2, 750, 250, '2023-10-14 10:30:00', '2023-10-14 16:45:00'),
+-- 	(3, 3, 1, 1000, 1000, '2023-10-15 15:45:00', '2023-10-15 15:45:00');
+--     
 -- inseret into payment
 
-INSERT INTO payment (invoice_id, payment_method_id, amount, payment_date) 
-VALUES 
-		(2, 1, 100, '2023-10-13 12:00:00'),
-		(2, 2, 250, '2023-10-14 16:45:00'),
-		(3, 1, 1000, '2023-10-15 15:45:00');
+-- INSERT INTO payment (invoice_id, payment_method_id, amount, payment_date) 
+-- VALUES 
+-- 		(2, 1, 100, '2023-10-13 12:00:00'),
+-- 		(2, 2, 250, '2023-10-14 16:45:00'),
+-- 		(3, 1, 1000, '2023-10-15 15:45:00');
         
 -- insert into staff assignment
 INSERT INTO staff_assignment (staff_id, reservation_id, notes)

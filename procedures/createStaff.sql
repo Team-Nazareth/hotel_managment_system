@@ -1,3 +1,5 @@
+delimiter //
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_staff`(
 	IN roleId int,
     IN pswd varchar(20),

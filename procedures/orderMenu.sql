@@ -1,3 +1,4 @@
+delimiter //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `order_menu`(
 	    IN g_id INT,
 	    IN t_id INT,
