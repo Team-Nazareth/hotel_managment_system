@@ -1,4 +1,5 @@
 delimiter //
+
 drop procedure if exists reserve_room;
 create procedure reserve_room(
   in g_id int,

@@ -113,11 +113,11 @@ VALUES
 -- insert into order
 INSERT INTO `order` (guest_id, table_id, quantity, cancel_date) 
 VALUES 
-	(1, 6, 2,  NULL),
-	(2, 8, 1,  NULL),
-    (2, 7, 1, NULL),
-    (1, 9, 1,  NULL),
-    (3, 10, 3,  '2023-10-13 20:20:00');
+	(1, 1, 2,  NULL),
+	(2, 2, 1,  NULL),
+    (2, 3, 1, NULL),
+    (1, 4, 1,  NULL),
+    (3, 5, 3,  '2023-10-13 20:20:00');
     
 -- insert into menu order
 INSERT INTO menu_order (menu_id, order_id) 

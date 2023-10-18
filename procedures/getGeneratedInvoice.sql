@@ -1,3 +1,4 @@
+
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS get_generated_invoice;

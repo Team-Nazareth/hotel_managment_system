@@ -1,7 +1,6 @@
 -- shows the room details with that id
 DELIMITER //
 
-
 DROP PROCEDURE IF EXISTS get_room_by_id;
 CREATE PROCEDURE get_room_by_id(
        IN id INT

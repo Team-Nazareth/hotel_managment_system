@@ -1,6 +1,7 @@
 -- edits the profile
 DELIMITER //
-
+  
+  
 DROP PROCEDURE IF EXISTS edit_guest_profile;
 CREATE DEFINER=`root`@`localhost` PROCEDURE edit_guest_profile(
     in id int,

@@ -1,6 +1,7 @@
 -- shows the profile
 DELIMITER //
 
+
 DROP PROCEDURE IF EXISTS get_profile;
 CREATE PROCEDURE get_profile(
     in id int,

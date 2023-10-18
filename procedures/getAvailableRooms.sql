@@ -1,6 +1,7 @@
 -- shows every available room with description
 DELIMITER //
 
+
 DROP PROCEDURE IF EXISTS get_available_rooms;
 CREATE DEFINER=`root`@`localhost` PROCEDURE get_available_rooms()
 BEGIN

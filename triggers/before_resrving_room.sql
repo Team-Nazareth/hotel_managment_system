@@ -4,7 +4,6 @@
 
 DELIMITER //
 
-
 DROP TRIGGER IF EXISTS before_reserving_room;
 CREATE TRIGGER before_reserving_room
 BEFORE INSERT ON reservation
