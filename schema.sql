@@ -192,5 +192,5 @@ ALTER TABLE `Order` ADD FOREIGN KEY (`table_id`) REFERENCES `Table` (`table_id`)
 ALTER TABLE `Menu_order` ADD FOREIGN KEY (`menu_id`) REFERENCES `Menu` (`menu_id`);
 
 ALTER TABLE `Menu_order` ADD FOREIGN KEY (`order_id`) REFERENCES `Order` (`order_id`);
-
+--it seems good
 
