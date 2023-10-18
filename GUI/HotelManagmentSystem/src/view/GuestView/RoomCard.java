@@ -25,10 +25,13 @@ class RoomCard extends Card {
 		NameLabel = new JLabel(data.Name);
 		RateLabel = new JLabel((data.Price).toString());
 		DescLabel = new JLabel(data.Desc);
+		JLabel category = new JLabel((data.capacity).toString());
+		
 		
 		p.add(NameLabel);
 		p.add(RateLabel);
 		p.add(DescLabel);
+		p.add(category);
 	}
 	
 	private boolean doesRoomExist() {

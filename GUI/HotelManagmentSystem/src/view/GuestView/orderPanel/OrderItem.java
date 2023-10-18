@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 // custom package
 import Model.OrderData;
+import constants.FilePaths;
 import util.FileHandler;
 
 
@@ -20,6 +21,8 @@ class OrderItem implements ActionListener {
 	JButton removeBtn;
 	JPanel parentPanel, itemPanel;
 	OrderData order;
+	OrderData.Category category;
+	
 	public OrderItem(JPanel p, OrderData od) {
 		parentPanel = p;
 		itemPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 100, 10));
@@ -36,7 +39,7 @@ class OrderItem implements ActionListener {
 		order.item_name = order.item_name;
         order.qty = order.qty;
         order.unit_price = order.unit_price;
-        OrderData.Category category = order.category ;
+        category = order.category ;
         
         itemPanel.add(new JLabel(order.item_name));
         itemPanel.add(new JLabel(category.toString()));
@@ -54,11 +57,20 @@ class OrderItem implements ActionListener {
         
         if (choice == JOptionPane.YES_OPTION) {
         	// Perform the delete operation
-        	
+
         	// delete from file
-        	FileHandler fileMan = new FileHandler("./Assets/menu.csv");
-        	String line = order.menu_id.toString() +","+ order.qty.toString();
-        	fileMan.deleteLine(line);
+        	
+        	if(category == OrderData.Category.MENU ) {
+        		
+            	FileHandler fileMan = new FileHandler(FilePaths.menuFile);
+            	String line = order.id.toString() +","+ order.qty.toString();
+            	fileMan.deleteLine(line);
+            	
+        	} else if(category == OrderData.Category.ROOM) {
+            	FileHandler fileMan = new FileHandler(FilePaths.roomFile);
+            	String line = order.id.toString();
+            	fileMan.deleteLine(line);
+        	}
         	
         	
         	// remove the item from GUI

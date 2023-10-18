@@ -6,4 +6,5 @@ public class menuData {
 	public String Desc;
 	public Integer menu_id;
 	public Integer qty;
+	public String category;
 }

@@ -2,9 +2,13 @@ package view.GuestView;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
+import Model.Connector;
+import Model.Users;
 import Model.menuData;
 import Model.roomData;
 // custom packages
@@ -36,14 +40,30 @@ public class ExplorePanel {
 	private void menuWrapper(JPanel p) {
 		menuCardWrapperPanel = new JPanel(new GridLayout(0, 3, 5, 10));
 		
-		for(int i =0; i < 12; i++ ) {	
-			menuData data = new menuData();
-			data.Name = "Menu Name";
-			data.Price = 50.0;
-			data.Desc = "Lorem ipsum dolor sit amet, consectetur adipiscing.";
-			data.menu_id = i+1;
-			new MenuCard(menuCardWrapperPanel,data);
-		}
+			String query = "SELECT * FROM menu;";
+			Connector con = new Connector(Users.getRoot());
+			ResultSet rs = con.getQueryResult(query);
+			
+			try {
+				// menu data
+				
+				while(rs.next()) {
+					menuData data = new menuData();
+					data.Name = rs.getString("name");
+					data.Price = rs.getDouble("price");
+					data.Desc = rs.getString("description");
+					data.menu_id = rs.getInt("menu_id");
+					data.category = rs.getString("category");
+					new MenuCard(menuCardWrapperPanel,data);
+				}
+			} catch (SQLException e) {
+				// fetch failed
+				e.printStackTrace();
+			}
+			
+			con.closePreparedStatement();
+			con.closeConnection();
+
 		
 		scrollMenuPane = new JScrollPane(menuCardWrapperPanel);
 		scrollMenuPane.setPreferredSize(new Dimension(920,670));
@@ -53,16 +73,27 @@ public class ExplorePanel {
 	
 	private void roomWrapper(JPanel p) {
 		roomCardWrapperPanel = new JPanel(new GridLayout(0, 3, 5, 10));
+
+		String query = "SELECT * FROM available_rooms";
+		Connector con = new Connector(Users.getRoot());
+		ResultSet rs = con.getQueryResult(query);
 		
-		for(int i =0; i < 12; i++ ) {		
-			
-			roomData data = new roomData();
-			data.Name = "Room Name";
-			data.Price = 70.0;
-			data.Desc = "Lorem ipsum dolor sit amet, consectetur adipiscing.";
-			data.room_id = i+1;
-			new RoomCard(roomCardWrapperPanel, data);
+		try {
+			while(rs.next()) {
+				roomData data = new roomData();
+				data.Name = rs.getString("type_name");
+				data.Price = rs.getDouble("rate");
+				data.Desc = rs.getString("description");
+				data.room_id = rs.getInt("room_id");
+				data.capacity = rs.getInt("capacity");
+				new RoomCard(roomCardWrapperPanel,data);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		
+		con.closePreparedStatement();
+		con.closeConnection();
 		
 		
 		scrollRoomPane = new JScrollPane(roomCardWrapperPanel);

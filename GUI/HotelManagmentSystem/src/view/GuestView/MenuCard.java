@@ -27,9 +27,11 @@ class MenuCard extends Card {
 		
 		NameLabel = new JLabel(data.Name);
 		RateLabel = new JLabel((data.Price).toString());
+		JLabel categoryLabel = new JLabel(data.category); 
 		
 		p.add(NameLabel);
 		p.add(RateLabel);
+		p.add(categoryLabel);
 	}
 	
 	private boolean doesRoomExist() {
