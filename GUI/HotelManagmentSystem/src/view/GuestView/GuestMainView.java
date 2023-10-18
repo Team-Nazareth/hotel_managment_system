@@ -5,8 +5,10 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 
+import view.GuestView.invoicePanel.InvoicePanel;
 // custom package
 import view.GuestView.orderPanel.OrderPanel;
+import view.GuestView.profilePanel.ProfilePanel;
 
 
 public class GuestMainView {
@@ -62,6 +64,8 @@ public class GuestMainView {
 		// fill content
 		new ExplorePanel(explorePanel);
 		new OrderPanel(orderPanel);
+		new InvoicePanel(invoicePanel);
+		new ProfilePanel(profilePanel);
 		
 		contentTab.addTab("Explore", explorePanel);
 		contentTab.addTab("Orders", orderPanel);
