@@ -60,6 +60,7 @@ public class Connector {
 				} else if(item instanceof Integer) {
 				    preparedStatement.setInt(count, (Integer) item);
 				}
+				count++;
 			}
 			
 			
@@ -86,6 +87,7 @@ public class Connector {
 				} else if(item instanceof Integer) {
 					callableStatement.setInt(count, (Integer) item);
 				}
+				count++;
 			}
 			
 		    
@@ -105,11 +107,16 @@ public class Connector {
 		return resultSet;
 	}
 	
-
+	public void closeResultSet() {
+    	try {
+			resultSet.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public void closePreparedStatement()  {
 	    try {
-	    	resultSet.close();
 			preparedStatement.close();
 		} catch (SQLException e) {
 			
@@ -119,7 +126,6 @@ public class Connector {
 	
 	public void closeCallableStatement()  {
 	    try {
-	    	resultSet.close();
 			callableStatement.close();
 		} catch (SQLException e) {
 			

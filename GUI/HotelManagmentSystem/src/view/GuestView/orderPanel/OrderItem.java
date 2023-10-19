@@ -25,7 +25,7 @@ class OrderItem implements ActionListener {
 	
 	public OrderItem(JPanel p, OrderData od) {
 		parentPanel = p;
-		itemPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 100, 10));
+		itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 105, 5));
 		itemPanel.setBackground(new Color(255,255,255));
 		
 		removeBtn = new JButton("remove");
@@ -71,7 +71,6 @@ class OrderItem implements ActionListener {
             	String line = order.id.toString();
             	fileMan.deleteLine(line);
         	}
-        	
         	
         	// remove the item from GUI
         	parentPanel.remove(itemPanel);

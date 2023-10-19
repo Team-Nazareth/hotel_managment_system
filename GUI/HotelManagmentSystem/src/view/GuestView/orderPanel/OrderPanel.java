@@ -2,8 +2,11 @@ package view.GuestView.orderPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,15 +21,16 @@ import constants.FilePaths;
 import util.FileHandler;
 
 
-public class OrderPanel {
+public class OrderPanel implements ActionListener {
 	JLabel itemNameLabel, categoryLabel , qtyLabel , unit_priceLabel, price_totalLabel, price_totalValueLabel;
 	JPanel wrapperPanel, itemWrapperPanel, itemPanel, colNamePanel, priceTotalPanel;
-	JButton removeBtn ;
+	JButton removeBtn, confirmOrderBtn ;
+	JScrollPane scrollOrderPane;
 	
 	Double price_total = 0.0;
 	
 	public OrderPanel(JPanel p)  {
-		wrapperPanel = new JPanel();
+		wrapperPanel = new JPanel(new BorderLayout());
 		colNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 100, 0));
 		itemWrapperPanel = new JPanel();
 		priceTotalPanel = new JPanel(new BorderLayout());
@@ -50,6 +54,8 @@ public class OrderPanel {
 		
 		// orders
 		this.itemWrapper(itemWrapperPanel);
+		scrollOrderPane = new JScrollPane(itemWrapperPanel);
+		scrollOrderPane.setPreferredSize(new Dimension(850,500));
 		
 		// price total
 		price_totalLabel = new JLabel("Total Price: ");
@@ -60,9 +66,16 @@ public class OrderPanel {
 		priceTotalPanel.add(price_totalLabel, BorderLayout.CENTER);
 		priceTotalPanel.add(price_totalValueLabel, BorderLayout.EAST);
 		
+		// confirm btn
+		confirmOrderBtn = new JButton("confirm Order");
+		confirmOrderBtn.setPreferredSize(new Dimension(100,40));
+		confirmOrderBtn.setBackground(new Color(173, 216, 230));
+		confirmOrderBtn.addActionListener(this);
+		
 		wrapperPanel.add(colNamePanel);
-		wrapperPanel.add(itemWrapperPanel);
+		wrapperPanel.add(scrollOrderPane);
 		wrapperPanel.add(priceTotalPanel);
+		wrapperPanel.add(confirmOrderBtn);
 		
 		p.add(wrapperPanel);
 		
@@ -131,9 +144,10 @@ public class OrderPanel {
 		}
 		
 
-		con.closeCallableStatement();
+//		con.closeCallableStatement();
 		con.closeConnection();
 	}
+	 
 	
 	public OrderData itemFill(String item_name, int qty, double unit_price, OrderData.Category category, int id) {
 		OrderData order = new OrderData();
@@ -146,10 +160,93 @@ public class OrderPanel {
 
         // Set the Category enum
         if(category == OrderData.Category.ROOM) {	        	
-        	order.category = OrderData.Category.MENU;
-        } else order.category = OrderData.Category.ROOM;
+        	order.category = OrderData.Category.ROOM;
+        } else order.category = OrderData.Category.MENU;
+        
+		if(!itemWrapperPanel.isEnabled()) {
+			itemWrapperPanel.setEnabled(true);;
+		}
         
         return order;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// make generate invoice using reserve_room() and order_menu()
+		// remove rooms and menus from file
+		// show message invoice generated
+		
+		if(!itemWrapperPanel.isEnabled()) {
+			this.confirmOrderBtn.removeActionListener(this);;
+		}
+		
+		ArrayList<String> roomIds;
+		ArrayList<String[]> menuIds;
+		
+		// read from room file 
+		FileHandler roomFile = new FileHandler(FilePaths.roomFile);
+		roomIds  = roomFile.readRoom();
+		
+		// read from menu file 
+		FileHandler menuFile = new FileHandler(FilePaths.menuFile);
+		menuIds  = menuFile.readMenu();
+		
+		Connector con = new Connector(Users.getRoot());
+//		ResultSet rs;
+		
+//		for rooms
+		for(String id: roomIds) {
+			String query = "{CALL reserve_room(?, ?, ?)}";
+			
+			int parsedID = Integer.parseInt(id);
+			Integer guest_id = 3;
+			String checkout_date = "2023-10-25";
+			Object[] param = {guest_id , parsedID, checkout_date};
+			
+			con.getProcedureCallResult(query, param);
+			
+			// clear file
+			
+        	String line = id;
+        	roomFile.deleteLine(line);
+
+		}
+		
+		// for menus
+
+		for(String[] row: menuIds) {
+			
+			String query = "{CALL order_menu(?, ?, ?, ?)}";
+			
+			// row[0] -> menu_id
+			int parsedID = Integer.parseInt(row[0]); 
+			int parsedQty = Integer.parseInt(row[1]);
+			Integer guest_id = 3;
+			Integer table_id = 1;
+			Object[] param = {guest_id,table_id, parsedQty, parsedID};
+			
+			con.getProcedureCallResult(query, param);
+			
+			//			clear from file
+  
+        	String line = row[0] +","+ row[1];
+        	menuFile.deleteLine(line);
+		}
+		
+		JOptionPane.showMessageDialog(null, "Order is successfully recorded. Please go to invoice", "Success Message", JOptionPane.INFORMATION_MESSAGE);
+
+//		con.closeCallableStatement();
+		con.closeConnection();
+		
+		// remove from gui
+		itemWrapperPanel.removeAll();
+		itemWrapperPanel.revalidate();
+		itemWrapperPanel.repaint();
+		itemWrapperPanel.add(new JLabel("no new order!"));
+		itemWrapperPanel.setEnabled(false);
+		
+		System.out.println("Order is Confirmed");
+		
 	}
 	
 }
