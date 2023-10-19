@@ -1,15 +1,26 @@
 package view;
 
 import java.awt.*;
+
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.*;
+
+import Model.Connector;
+import Model.Users;
+
+
+class GuestDetails {
+	String firstName, lastName, email, b_date, p_num, sex, pswd;
+}
 
 public class SignUpUI implements ActionListener { 
 	JPanel formPanel, subFormPanel, parentForm;
 	JLabel titleLabel, firstNameLabel, lastNameLabel, emailLabel,
-			b_dateLabel, sexLabel, p_numLabel, userNameLabel, pswdLabel, padding;
-	JTextField firstName, lastName, email, b_date, p_num, userName ;
+			b_dateLabel, sexLabel, p_numLabel, pswdLabel, padding;
+	JTextField firstName, lastName, email, b_date, p_num ;
 	JPasswordField pswd;
 	JComboBox<String> sex;
 	JButton signupBtn, backBtn;
@@ -32,15 +43,14 @@ public class SignUpUI implements ActionListener {
 		titleLabel = new JLabel("Sign Up Form!");
 		titleLabel.setFont(new Font("Arial", Font.ITALIC, 30));
 		firstNameLabel = new JLabel("First Name(*): ");
-		lastNameLabel = new JLabel("Last Name(*): ");
+		lastNameLabel = new JLabel("Last Name: ");
 		emailLabel = new JLabel("Email: ");
 		b_dateLabel = new JLabel("Birth Date: ");
-		sexLabel = new JLabel("Sex(*): ");
+		sexLabel = new JLabel("Sex: ");
 		p_numLabel = new JLabel("Phone number(*): ");
 		padding = new JLabel("");
 		padding.setPreferredSize(new Dimension(100,50));
 		
-		userNameLabel = new JLabel("Username(*): ");
 		pswdLabel = new JLabel("Password(*): ");
 		
 		//text fields
@@ -59,9 +69,6 @@ public class SignUpUI implements ActionListener {
 		
 		p_num = new JTextField(20);
 		p_num.setPreferredSize(new Dimension(100,30));
-		
-		userName = new JTextField(20);
-		userName.setPreferredSize(new Dimension(100,30));
 		
 		pswd = new JPasswordField(20);
 		pswd.setPreferredSize(new Dimension(100,30));
@@ -147,15 +154,6 @@ public class SignUpUI implements ActionListener {
 		constrients.gridy = 7;
 		formPanel.add(padding, constrients);
 		
-		// username
-		constrients.gridx = 0;
-		constrients.gridy = 8;
-		formPanel.add(userNameLabel, constrients);
-		
-		constrients.gridx = 1;
-		constrients.gridy = 8;
-		formPanel.add(userName, constrients);
-		
 		// pswd
 		constrients.gridx = 0;
 		constrients.gridy = 9;
@@ -177,10 +175,96 @@ public class SignUpUI implements ActionListener {
 	}
 	
 	
+	public GuestDetails userProfile() throws CustomException {
+		GuestDetails data = new GuestDetails();
+		
+		// required fields
+		if(firstName.getText().isEmpty() || 
+		   p_num.getText().isEmpty() || 
+		   (new String(pswd.getPassword())).isEmpty() ) {
+			// abort registration
+			throw new CustomException("Please make sure all required(*) fields are filled!");
+		} 
+		
+		if (!FormValidator.isValidateDate(b_date.getText())) {
+			// abort registration
+			throw new CustomException("Date is not valid! Date format should be YYYY-MM-DD");
+		}
+		
+		if(!FormValidator.isValidPhoneNumber(p_num.getText(), false)) {
+			// abort registration
+			throw new CustomException("Phone number is not valid! Please make sure to provide 9 char length Integer.");
+		}
+		
+		data.firstName = firstName.getText();
+		data.lastName = lastName.getText();
+		data.email = email.getText();
+		data.b_date = b_date.getText();
+		data.p_num = p_num.getText();
+		data.pswd = new String(pswd.getPassword());
+		
+		String gender = (String) sex.getSelectedItem();
+		
+		if(gender.equals("Male")) {
+			data.sex = "M";
+		} else if(gender.equals("Female")) {
+			
+			data.sex = "F";
+		}
+		
+		return data;
+	}
+	
+	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == signupBtn) {
-			System.out.println("register a user");
-			p_cardLayout.show(parentForm, "guest");
+			
+			System.out.println("registering a user");
+			
+			GuestDetails data;
+			
+			try {
+				
+				data = userProfile();
+				
+				String query = "CALL create_guest( ?, ?, ?, ?, ?, ?, ? );";
+				
+				Connector con = new Connector(Users.getRoot());
+				ResultSet rs;
+				
+				Object[] param = {
+						data.pswd, data.firstName, data.lastName, data.email,
+						data.sex, data.b_date, data.p_num
+				};
+				
+				
+				rs = con.getProcedureCallResult(query, param);
+				
+				String generatedUsername = null;
+				try {
+					if(rs.next()) {
+						generatedUsername = rs.getString("username");
+					}
+				} catch (SQLException e1) {
+					JOptionPane.showMessageDialog(null, e1.getMessage(), "Unexpexcted database error occured", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				}
+				
+				con.closeResultSet();
+				con.closeConnection();
+				
+				JOptionPane.showMessageDialog(null, ("You have been registerd! \nYour username is: "+ generatedUsername) , "Registration success", JOptionPane.INFORMATION_MESSAGE);
+				
+				p_cardLayout.show(parentForm, "guest");
+				
+				System.out.println("registration done");
+				
+			} catch (CustomException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Registration failed", JOptionPane.ERROR_MESSAGE);
+				e1.printStackTrace();
+			}
+			
+			
 		} else if(e.getSource() == backBtn) {
 			System.out.println("back");
 			p_cardLayout.show(parentForm, "guest");

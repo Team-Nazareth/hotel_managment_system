@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import Model.Connector;
 import Model.Users;
+import view.CustomException;
 
 class ProfileFields {
 	public String username;

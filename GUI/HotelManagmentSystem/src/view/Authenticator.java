@@ -107,7 +107,6 @@ class PasswordValidator {
 }
 
 public class Authenticator {
-	Connector con;
 	private boolean result ;
 	private String Username;
 	
@@ -141,7 +140,7 @@ public class Authenticator {
 	       
 	            
 	            Object[] param = {Username};
-	            
+	        	Connector con = new Connector(Users.getRoot());
 	        	ResultSet resultSet = con.getQueryResult(query, param);
 
 	            if (resultSet.next()) {
@@ -149,7 +148,6 @@ public class Authenticator {
 	            }
 	            
 	            con.closeConnection();
-
 	            return guest_id;
 	            
 	        } catch (SQLException e) {
@@ -170,6 +168,7 @@ public class Authenticator {
 	            
 	            Object[] param = {Username};
 	            
+	            Connector con = new Connector(Users.getRoot());
 	        	ResultSet resultSet = con.getQueryResult(query, param);
 
 	            if (resultSet.next()) {

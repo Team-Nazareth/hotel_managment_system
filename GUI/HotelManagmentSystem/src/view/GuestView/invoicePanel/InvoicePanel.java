@@ -132,7 +132,7 @@ public class InvoicePanel implements ActionListener {
 		int prevNumRows = model.getRowCount();
 		int afterNumRows = 0;
 		
-		TableInfo tableInfo = this.getInvoice(3);
+		TableInfo tableInfo = this.getInvoice(guestId);
 		
 		DefaultTableModel tempModel = new DefaultTableModel(tableInfo.data , tableInfo.colNames ) {
             @Override

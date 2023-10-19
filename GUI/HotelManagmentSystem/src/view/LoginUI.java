@@ -246,7 +246,7 @@ public class LoginUI implements ActionListener {
 			MainView.panelRemover(theFrame, loginPanel);		
 			MainView.repainter(theFrame);
 		} else {
-			JOptionPane.showMessageDialog(theFrame, "Invalid credientail! try again", "login failed", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(theFrame, "Invalid Credientail! try again", "login failed", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

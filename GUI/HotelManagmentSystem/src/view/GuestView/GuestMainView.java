@@ -18,6 +18,9 @@ public class GuestMainView {
 	JPanel  containerPanel, headerPanel, contentWrapperPanel;
 	JLabel heroTitle;
 	JTabbedPane contentTab;
+	JMenuBar menuBar;
+	JMenu actionsMenu;
+	JMenuItem logOutItem ;
 	int guestId;
 	
 	public GuestMainView(JFrame f, int guest_id) {
@@ -27,6 +30,24 @@ public class GuestMainView {
 		containerPanel = new JPanel(new BorderLayout());
 		headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		contentWrapperPanel = new JPanel(new BorderLayout());
+		
+        menuBar = new JMenuBar();
+        actionsMenu = new JMenu("File");
+        logOutItem= new JMenuItem("Log Out");
+
+        logOutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Perform the log out action here
+                System.out.println("Log Out clicked");
+            }
+        });
+
+        // Add the "Log Out" menu item to the "File" menu
+        actionsMenu.add(logOutItem);
+
+        // Add the "File" menu to the menu bar
+        menuBar.add(actionsMenu);
 		
 		heroTitle = new JLabel("Discover Luxury and Comfort");
 		heroTitle.setFont(new Font("Arial", Font.ITALIC, 35));
@@ -38,6 +59,7 @@ public class GuestMainView {
 		this.contentWrapper(contentWrapperPanel);
 		
 		// 
+		containerPanel.add(menuBar);
 		containerPanel.add(headerPanel, BorderLayout.NORTH);
 		containerPanel.add(contentWrapperPanel, BorderLayout.CENTER);
 		

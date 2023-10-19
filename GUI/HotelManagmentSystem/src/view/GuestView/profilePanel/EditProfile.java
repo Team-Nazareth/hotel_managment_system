@@ -6,24 +6,9 @@ import java.util.regex.Pattern;
 
 import javax.swing.*;
 
-class CustomException extends Exception {
-	
-	public CustomException() {
-		super();
-	}
-	
-	public CustomException(String message) {
-		super(message);
-	}
-	
-	public CustomException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
-	public CustomException(Throwable cause) {
-		super(cause);
-	}
-}
+import view.CustomException;
+import view.FormValidator;
+
 
 class EditableProfileFields {
 	String phone_number;
@@ -68,9 +53,9 @@ public class EditProfile {
         } else if(p_num.isEmpty() && email.isEmpty() && pswd.isEmpty() ) {
         	System.out.println("No change took place");
         	throw new CustomException("No Update!");
-        } else if(!isValidPhoneNumber(p_num)) {
+        } else if(!FormValidator.isValidPhoneNumber(p_num, true)) {
         	throw new CustomException("Phone Number is not valid! It Should be 9 char length Integer.");
-        } else if(!isValidEmail(email)) {
+        } else if(!FormValidator.isValidEmail(email, true)) {
         	throw new CustomException("Not a valid email format!");
         } else {
         	
@@ -88,37 +73,5 @@ public class EditProfile {
          
         return fileds;
 	}
-	
-    public static boolean isValidEmail(String email) {
-      	if(email.isEmpty()) {
-    		// this means the user is not updating email
-    		return true;
-    	} 
-        // regular expression pattern for a valid email address
-        String regexPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 
-        Pattern pattern = Pattern.compile(regexPattern);
-
-        Matcher matcher = pattern.matcher(email);
-
-        return matcher.matches();
-    }
-    
-    public static boolean isValidPhoneNumber(String phoneNumber) {
-    	
-    	if(phoneNumber.isEmpty()) {
-    		// this means the user is not updating p_num
-    		return true;
-    	} else if( phoneNumber.length() != 9) {
-    		return false;
-    	}
-    	
-        String regexPattern = "^[0-9]+$";
-
-        Pattern pattern = Pattern.compile(regexPattern);
-
-        Matcher matcher = pattern.matcher(phoneNumber);
-
-        return matcher.matches();
-    }
 }
