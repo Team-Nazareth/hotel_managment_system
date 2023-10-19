@@ -18,9 +18,11 @@ public class GuestMainView {
 	JPanel  containerPanel, headerPanel, contentWrapperPanel;
 	JLabel heroTitle;
 	JTabbedPane contentTab;
+	int guestId;
 	
-	public GuestMainView(JFrame f) {
+	public GuestMainView(JFrame f, int guest_id) {
 		theFrame = f;
+		guestId = guest_id;
 		
 		containerPanel = new JPanel(new BorderLayout());
 		headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -58,14 +60,14 @@ public class GuestMainView {
 		
 		JPanel explorePanel = new JPanel();
 		JPanel orderPanel = new JPanel();
-		JPanel invoicePanel = new JPanel();
+		JPanel invoicePanel = new JPanel(new BorderLayout());
 		JPanel profilePanel = new JPanel();
 		
 		// fill content
 		new ExplorePanel(explorePanel);
 		new OrderPanel(orderPanel);
-		new InvoicePanel(invoicePanel);
-		new ProfilePanel(profilePanel);
+		new InvoicePanel(invoicePanel, guestId);
+		new ProfilePanel(profilePanel, guestId);
 		
 		contentTab.addTab("Explore", explorePanel);
 		contentTab.addTab("Orders", orderPanel);

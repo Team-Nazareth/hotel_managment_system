@@ -110,7 +110,7 @@ public class OrderPanel implements ActionListener {
 				while (rs.next()) {
 					price_total += rs.getDouble("rate");
 					OrderData order = itemFill(rs.getString("type_name"), 1,rs.getDouble("rate"),OrderData.Category.ROOM, parsedID);
-					new OrderItem(p, order);
+					new OrderItem(p, order, price_totalValueLabel);
 				}
 			} catch (SQLException e) {
 				System.out.println("order reading from db failed");
@@ -135,7 +135,7 @@ public class OrderPanel implements ActionListener {
 				while (rs.next()) {	
 					price_total += (rs.getDouble("price") * parsedQty);
 					OrderData order = itemFill(rs.getString("name"), parsedQty ,rs.getDouble("price"),OrderData.Category.MENU, parsedID);
-					new OrderItem(p, order);
+					new OrderItem(p, order, price_totalValueLabel);
 				}
 			} catch (SQLException e) {
 				System.out.println("order reading from db failed");
@@ -180,72 +180,79 @@ public class OrderPanel implements ActionListener {
 			this.confirmOrderBtn.removeActionListener(this);;
 		}
 		
-		ArrayList<String> roomIds;
-		ArrayList<String[]> menuIds;
+		int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to Proceed with payment?",
+				"Payment Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 		
-		// read from room file 
-		FileHandler roomFile = new FileHandler(FilePaths.roomFile);
-		roomIds  = roomFile.readRoom();
+		if(choice == JOptionPane.YES_OPTION) {
 		
-		// read from menu file 
-		FileHandler menuFile = new FileHandler(FilePaths.menuFile);
-		menuIds  = menuFile.readMenu();
-		
-		Connector con = new Connector(Users.getRoot());
-//		ResultSet rs;
-		
-//		for rooms
-		for(String id: roomIds) {
-			String query = "{CALL reserve_room(?, ?, ?)}";
+			ArrayList<String> roomIds;
+			ArrayList<String[]> menuIds;
 			
-			int parsedID = Integer.parseInt(id);
-			Integer guest_id = 3;
-			String checkout_date = "2023-10-25";
-			Object[] param = {guest_id , parsedID, checkout_date};
+			// read from room file 
+			FileHandler roomFile = new FileHandler(FilePaths.roomFile);
+			roomIds  = roomFile.readRoom();
 			
-			con.getProcedureCallResult(query, param);
+			// read from menu file 
+			FileHandler menuFile = new FileHandler(FilePaths.menuFile);
+			menuIds  = menuFile.readMenu();
 			
-			// clear file
+			Connector con = new Connector(Users.getRoot());
+	//		ResultSet rs;
 			
-        	String line = id;
-        	roomFile.deleteLine(line);
+	//		for rooms
+			for(String id: roomIds) {
+				String query = "{CALL reserve_room(?, ?, ?)}";
+				
+				int parsedID = Integer.parseInt(id);
+				Integer guest_id = 3;
+				String checkout_date = "2023-10-25";
+				Object[] param = {guest_id , parsedID, checkout_date};
+				
+				con.getProcedureCallResult(query, param);
+				
+				// clear file
+				
+	        	String line = id;
+	        	roomFile.deleteLine(line);
+	
+			}
+			
+			// for menus
+	
+			for(String[] row: menuIds) {
+				
+				String query = "{CALL order_menu(?, ?, ?, ?)}";
+				
+				// row[0] -> menu_id
+				int parsedID = Integer.parseInt(row[0]); 
+				int parsedQty = Integer.parseInt(row[1]);
+				Integer guest_id = 3;
+				Integer table_id = 1;
+				Object[] param = {guest_id,table_id, parsedQty, parsedID};
+				
+				con.getProcedureCallResult(query, param);
+				
+				//			clear from file
+	  
+	        	String line = row[0] +","+ row[1];
+	        	menuFile.deleteLine(line);
+			}
+			
+			JOptionPane.showMessageDialog(null, "Order is successfully recorded. Please head over to invoice", "Success Message", JOptionPane.INFORMATION_MESSAGE);
 
+			// remove from gui
+			itemWrapperPanel.removeAll();
+			itemWrapperPanel.revalidate();
+			itemWrapperPanel.repaint();
+			itemWrapperPanel.add(new JLabel("no new order!"));
+			itemWrapperPanel.setEnabled(false);
+			
+			System.out.println("Order is Confirmed");
+			
+			con.closeConnection();
 		}
+		//con.closeCallableStatement();
 		
-		// for menus
-
-		for(String[] row: menuIds) {
-			
-			String query = "{CALL order_menu(?, ?, ?, ?)}";
-			
-			// row[0] -> menu_id
-			int parsedID = Integer.parseInt(row[0]); 
-			int parsedQty = Integer.parseInt(row[1]);
-			Integer guest_id = 3;
-			Integer table_id = 1;
-			Object[] param = {guest_id,table_id, parsedQty, parsedID};
-			
-			con.getProcedureCallResult(query, param);
-			
-			//			clear from file
-  
-        	String line = row[0] +","+ row[1];
-        	menuFile.deleteLine(line);
-		}
-		
-		JOptionPane.showMessageDialog(null, "Order is successfully recorded. Please go to invoice", "Success Message", JOptionPane.INFORMATION_MESSAGE);
-
-//		con.closeCallableStatement();
-		con.closeConnection();
-		
-		// remove from gui
-		itemWrapperPanel.removeAll();
-		itemWrapperPanel.revalidate();
-		itemWrapperPanel.repaint();
-		itemWrapperPanel.add(new JLabel("no new order!"));
-		itemWrapperPanel.setEnabled(false);
-		
-		System.out.println("Order is Confirmed");
 		
 	}
 	

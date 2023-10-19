@@ -1,7 +1,9 @@
 package view;
 
 import java.awt.*;
+
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import constants.FilePaths;
@@ -18,8 +20,8 @@ public class LoginUI implements ActionListener {
 	Image image;
 	JLabel greetLabel, nameLabel, pswdLabel, access_levelLabel;
 	JButton loginStaffBtn, loginGuestBtn, signupBtn, staffOptionBtn, guestOptionBtn;
-	JTextField username;
-	JPasswordField password;
+	JTextField usernameField , usernameStaffField;
+	JPasswordField passwordField, passwordStaffField;
 	JComboBox<String> access_level;
 	
 	
@@ -70,10 +72,10 @@ public class LoginUI implements ActionListener {
 		nameLabel = new JLabel("username: ");
 		pswdLabel = new JLabel("password: ");
 		
-		username = new JTextField(20);
-		username.setPreferredSize(new Dimension(200,30));
-		password = new JPasswordField(20);
-		password.setPreferredSize(new Dimension(200,30));
+		usernameField = new JTextField(20);
+		usernameField.setPreferredSize(new Dimension(200,30));
+		passwordField = new JPasswordField(20);
+		passwordField.setPreferredSize(new Dimension(200,30));
 
 		// login Btn
 		loginGuestBtn = new JButton("Login");
@@ -103,7 +105,7 @@ public class LoginUI implements ActionListener {
 		
 		constrients.gridx = 1;
 		constrients.gridy = 1;
-		subPanel.add(username, constrients);
+		subPanel.add(usernameField, constrients);
 		
 		// password
 		constrients.gridx = 0;
@@ -112,7 +114,7 @@ public class LoginUI implements ActionListener {
 		
 		constrients.gridx = 1;
 		constrients.gridy = 2;
-		subPanel.add(password, constrients);
+		subPanel.add(passwordField, constrients);
 		
 		// login button
 		constrients.gridx = 1;
@@ -144,10 +146,10 @@ public class LoginUI implements ActionListener {
 		nameLabel = new JLabel("username: ");
 		pswdLabel = new JLabel("password: ");
 		
-		username = new JTextField(20);
-		username.setPreferredSize(new Dimension(300,30));
-		password = new JPasswordField(20);
-		password.setPreferredSize(new Dimension(300,30));
+		usernameStaffField = new JTextField(20);
+		usernameStaffField.setPreferredSize(new Dimension(300,30));
+		passwordStaffField = new JPasswordField(20);
+		passwordStaffField.setPreferredSize(new Dimension(300,30));
 
 		
 		loginStaffBtn = new JButton("Login");
@@ -176,7 +178,7 @@ public class LoginUI implements ActionListener {
 		
 		constrients.gridx = 1;
 		constrients.gridy = 1;
-		subPanel.add(username, constrients);
+		subPanel.add(usernameStaffField, constrients);
 		
 		// password
 		constrients.gridx = 0;
@@ -185,7 +187,7 @@ public class LoginUI implements ActionListener {
 		
 		constrients.gridx = 1;
 		constrients.gridy = 2;
-		subPanel.add(password, constrients);
+		subPanel.add(passwordStaffField, constrients);
 		
 		// access_level
 		constrients.gridx = 0;
@@ -217,21 +219,39 @@ public class LoginUI implements ActionListener {
         p.add(label, BorderLayout.EAST);
 	}
 	
-	private void loginHandler(String username, String Password) {
+	private void loginHandler(String username, String password) {
+		// for guest
+		Authenticator auth = new Authenticator(username, password);
+		boolean result = auth.isAuthenticated();
 		
-		MainView.panelRemover(theFrame, loginPanel);
 		// if authorized
-		new GuestMainView(theFrame);
 		
-		MainView.repainter(theFrame);
+		if(result) {					
+			MainView.panelRemover(theFrame, loginPanel);
+			new GuestMainView(theFrame, auth.getGuestId());		
+			MainView.repainter(theFrame);
+		} else {
+			JOptionPane.showMessageDialog(theFrame, "Invalid credientail!", "login failed", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
-	private void loginHandler(String username, String Password, String access_level) {
-		MainView.panelRemover(theFrame, loginPanel);
+	private void loginHandler(String username, String password, String access_level) {
+		// for staff
+		Authenticator auth = new Authenticator(username, password, access_level);
+		boolean result = auth.isAuthenticated();
+		
 		// if authorized
 		
-		MainView.repainter(theFrame);
+		if(result) {					
+			MainView.panelRemover(theFrame, loginPanel);		
+			MainView.repainter(theFrame);
+		} else {
+			JOptionPane.showMessageDialog(theFrame, "Invalid credientail! try again", "login failed", JOptionPane.ERROR_MESSAGE);
+		}
 	}
+	
+	
+
 	
 	public void actionPerformed(ActionEvent e) {
 		
@@ -243,11 +263,22 @@ public class LoginUI implements ActionListener {
 			
 		} else if(e.getSource() == loginGuestBtn ) {
 			System.out.println("guest login pressed");
-			loginHandler("","");
+			
+			String username = usernameField.getText();
+			char[] pswdChar = passwordField.getPassword();
+            String pswd = new String(pswdChar);
+            
+			loginHandler(username, pswd);
 			
 		} else if(e.getSource() == loginStaffBtn) {
 			System.out.println("staff login pressed");
-			loginHandler("","", "");
+			
+			String username = usernameStaffField.getText();
+			char[] pswdChar = passwordStaffField.getPassword();
+            String pswd = new String(pswdChar);
+            
+			loginHandler(username, pswd, "staff");
+			
 		} else if(e.getSource() == signupBtn ) {
 			cardLayout.show(FormPanel, "signup");
 			

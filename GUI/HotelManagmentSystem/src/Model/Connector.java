@@ -1,11 +1,15 @@
 package Model;
 
 import java.sql.CallableStatement;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+
+import constants.DbInfo;
 
 public class Connector {
 	String url, username, password;
@@ -15,7 +19,7 @@ public class Connector {
 	ResultSet resultSet;
 	
 	public Connector(Crediential crediential)  {
-		url = "jdbc:mysql://localhost:3306/hotel_managment_system";
+		url = DbInfo.URL;
 		username = crediential.username;
 		password = crediential.password;
 		
@@ -59,7 +63,10 @@ public class Connector {
 					preparedStatement.setString(count, (String) item);
 				} else if(item instanceof Integer) {
 				    preparedStatement.setInt(count, (Integer) item);
-				}
+				} 
+//				else if(item == null) {
+//					preparedStatement.setNull(count,(int) item);
+//				}
 				count++;
 			}
 			
@@ -86,6 +93,9 @@ public class Connector {
 					callableStatement.setString(count, (String) item);
 				} else if(item instanceof Integer) {
 					callableStatement.setInt(count, (Integer) item);
+				} else if(item == null) {
+					// only for editing profile (problematic)
+					callableStatement.setNull(count, Types.VARCHAR);
 				}
 				count++;
 			}

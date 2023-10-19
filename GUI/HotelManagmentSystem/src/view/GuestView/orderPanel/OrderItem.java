@@ -5,26 +5,30 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import Model.FetchTotalOrderPrice;
 // custom package
 import Model.OrderData;
 import constants.FilePaths;
 import util.FileHandler;
 
 
-class OrderItem implements ActionListener {
+public class OrderItem implements ActionListener {
 	JButton removeBtn;
 	JPanel parentPanel, itemPanel;
+	JLabel price_totalValueLabel;
 	OrderData order;
 	OrderData.Category category;
 	
-	public OrderItem(JPanel p, OrderData od) {
+	public OrderItem(JPanel p, OrderData od, JLabel priceLabel) {
 		parentPanel = p;
+		price_totalValueLabel = priceLabel;
 		itemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 105, 5));
 		itemPanel.setBackground(new Color(255,255,255));
 		
@@ -71,6 +75,18 @@ class OrderItem implements ActionListener {
             	String line = order.id.toString();
             	fileMan.deleteLine(line);
         	}
+        	
+    		ArrayList<String> roomIds;
+    		ArrayList<String[]> menuIds;
+    		
+    		// read from room file 
+    		roomIds  = new FileHandler(FilePaths.roomFile).readRoom();
+    		
+    		// read from menu file 
+    		menuIds  = new FileHandler(FilePaths.menuFile).readMenu();
+        	
+        	// recalculate and validate price total
+        	new FetchTotalOrderPrice(price_totalValueLabel).total_price(roomIds, menuIds);
         	
         	// remove the item from GUI
         	parentPanel.remove(itemPanel);
