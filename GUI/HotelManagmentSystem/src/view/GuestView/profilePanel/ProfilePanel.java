@@ -5,49 +5,30 @@ import java.awt.Font;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import javax.swing.*;
 
 import Model.Connector;
 import Model.Users;
 import view.CustomException;
+import view.ProfileFields;
 
-class ProfileFields {
-	public String username;
-	public String first_name;
-	public String last_name;
-	public String email;
-	public String birth_date;
-	public String sex ;
-	public String phone_num;
-}
 
 class GuestProfile extends ProfileFields {
 	public Integer guest_id;
 }
 
-class StaffProfile extends ProfileFields {
-	public Integer staff_id;
-	public Integer role_id;
-	public Integer reports_to; 
-	public access_level accessLevel;
-	public enum access_level {
-		MANAGER,
-		RECEPTION,
-		REGULAR_STAFF
-	};
-}
 
 public class ProfilePanel implements ActionListener {
 	// can edit profile
 	// can see profile info
-	JPanel containerPanel, wrapperPanel;
-	JLabel usernameLabel, fullNameLabel, emailLabel, birth_dateLabel,sex, p_numLabel;
-	JButton editProfileBtn, refreshProfileBtn ;
-	Connector con;
-	ResultSet resultSet;
-	int guest_id ;
+	protected JPanel containerPanel;
+	protected JPanel wrapperPanel;
+	protected JLabel usernameLabel, fullNameLabel, emailLabel, birth_dateLabel,sex, p_numLabel;
+	private JButton editProfileBtn, refreshProfileBtn ;
+	protected Connector con;
+	protected ResultSet resultSet;
+	private int guest_id ;
 	
 	public ProfilePanel(JPanel p, int id) {
 		
@@ -88,16 +69,18 @@ public class ProfilePanel implements ActionListener {
 		
 		try {
 			// we are not looping because result is certain to be one item,  based on our db
-			resultSet.next();
+			if(resultSet.next()) {
+				
+				data.guest_id = guest_id;
+				data.username = resultSet.getString("username");
+				data.first_name = resultSet.getString("first_name");
+				data.last_name = resultSet.getString("last_name");
+				data.birth_date = resultSet.getString("birth_date");
+				data.email = resultSet.getString("email");
+				data.sex = resultSet.getString("sex");
+				data.phone_num = resultSet.getString("phone_num");
+			}
 			
-			data.guest_id = guest_id;
-			data.username = resultSet.getString("username");
-			data.first_name = resultSet.getString("first_name");
-			data.last_name = resultSet.getString("last_name");
-			data.birth_date = resultSet.getString("birth_date");
-			data.email = resultSet.getString("email");
-			data.sex = resultSet.getString("sex");
-			data.phone_num = resultSet.getString("phone_num");
 			
 			con.closeResultSet();
 		} catch (SQLException e) {
@@ -142,7 +125,7 @@ public class ProfilePanel implements ActionListener {
 				String query = "CALL edit_guest_profile(?, ?, ?, ?);";
 				EditableProfileFields fields = new EditProfile().getValues();
 				
-				int id = 3;
+				int id = guest_id;
 				// check for nullable fields and set the sqlTyoe null
 				String pswd = fields.password ;
 				String email = fields.email;

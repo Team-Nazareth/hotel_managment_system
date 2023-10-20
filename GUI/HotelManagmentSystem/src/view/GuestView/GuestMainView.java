@@ -5,8 +5,9 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.event.*;
 
-import view.GuestView.invoicePanel.InvoicePanel;
 // custom package
+import view.MainView;
+import view.GuestView.invoicePanel.InvoicePanel;
 import view.GuestView.orderPanel.OrderPanel;
 import view.GuestView.profilePanel.ProfilePanel;
 
@@ -15,7 +16,7 @@ public class GuestMainView {
 	//passed from the container class
 	JFrame theFrame;
 	// end
-	JPanel  containerPanel, headerPanel, contentWrapperPanel;
+	JPanel  containerPanel, headerPanel, contentWrapperPanel, MenuBarPanel;
 	JLabel heroTitle;
 	JTabbedPane contentTab;
 	JMenuBar menuBar;
@@ -23,32 +24,27 @@ public class GuestMainView {
 	JMenuItem logOutItem ;
 	int guestId;
 	
-	public GuestMainView(JFrame f, int guest_id) {
+	public GuestMainView(JFrame f, int guest_id, JPanel loginPanel) {
 		theFrame = f;
 		guestId = guest_id;
 		
 		containerPanel = new JPanel(new BorderLayout());
 		headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		contentWrapperPanel = new JPanel(new BorderLayout());
+		MenuBarPanel = new JPanel(new BorderLayout());
 		
         menuBar = new JMenuBar();
-        actionsMenu = new JMenu("File");
+        actionsMenu = new JMenu("Action");
         logOutItem= new JMenuItem("Log Out");
 
-        logOutItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Perform the log out action here
-                System.out.println("Log Out clicked");
-            }
-        });
 
         // Add the "Log Out" menu item to the "File" menu
         actionsMenu.add(logOutItem);
 
         // Add the "File" menu to the menu bar
         menuBar.add(actionsMenu);
-		
+        MenuBarPanel.add(menuBar, BorderLayout.WEST);
+        
 		heroTitle = new JLabel("Discover Luxury and Comfort");
 		heroTitle.setFont(new Font("Arial", Font.ITALIC, 35));
 		
@@ -58,12 +54,23 @@ public class GuestMainView {
 		// content
 		this.contentWrapper(contentWrapperPanel);
 		
-		// 
-		containerPanel.add(menuBar);
-		containerPanel.add(headerPanel, BorderLayout.NORTH);
-		containerPanel.add(contentWrapperPanel, BorderLayout.CENTER);
+		containerPanel.add(MenuBarPanel, BorderLayout.NORTH);
+		containerPanel.add(headerPanel, BorderLayout.CENTER);
+		containerPanel.add(contentWrapperPanel, BorderLayout.SOUTH);
 		
 		theFrame.add(containerPanel);
+		
+        logOutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            	MainView.panelRemover(theFrame, containerPanel);
+            	theFrame.add(loginPanel);
+            	MainView.repainter(theFrame);
+            	
+                System.out.println("Log Out clicked");
+            }
+        });
 	}
 	
 	private void contentWrapper(JPanel p) {
@@ -87,7 +94,7 @@ public class GuestMainView {
 		
 		// fill content
 		new ExplorePanel(explorePanel);
-		new OrderPanel(orderPanel);
+		new OrderPanel(orderPanel, guestId);
 		new InvoicePanel(invoicePanel, guestId);
 		new ProfilePanel(profilePanel, guestId);
 		

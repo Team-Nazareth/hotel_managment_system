@@ -27,9 +27,12 @@ public class OrderPanel implements ActionListener {
 	JButton removeBtn, confirmOrderBtn ;
 	JScrollPane scrollOrderPane;
 	
+	int guestId;
 	Double price_total = 0.0;
 	
-	public OrderPanel(JPanel p)  {
+	public OrderPanel(JPanel p, int guest_id)  {
+		guestId = guest_id;
+		
 		wrapperPanel = new JPanel(new BorderLayout());
 		colNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 100, 0));
 		itemWrapperPanel = new JPanel();
@@ -204,7 +207,7 @@ public class OrderPanel implements ActionListener {
 				String query = "{CALL reserve_room(?, ?, ?)}";
 				
 				int parsedID = Integer.parseInt(id);
-				Integer guest_id = 3;
+				Integer guest_id = guestId;
 				String checkout_date = "2023-10-25";
 				Object[] param = {guest_id , parsedID, checkout_date};
 				
@@ -226,7 +229,7 @@ public class OrderPanel implements ActionListener {
 				// row[0] -> menu_id
 				int parsedID = Integer.parseInt(row[0]); 
 				int parsedQty = Integer.parseInt(row[1]);
-				Integer guest_id = 3;
+				Integer guest_id = guestId;
 				Integer table_id = 1;
 				Object[] param = {guest_id,table_id, parsedQty, parsedID};
 				

@@ -9,19 +9,14 @@ import javax.swing.JLabel;
 
 public class FetchTotalOrderPrice {
 	Double price_total = 0.0;
-	JLabel priceTotalLabel;
+//	JLabel priceTotalLabel;
 	Connector con;
 	ResultSet rs;
 	
 	
-	public FetchTotalOrderPrice(JLabel l) {
-		priceTotalLabel = l;
+	public FetchTotalOrderPrice(JLabel l, ArrayList<String> roomIds, ArrayList<String[]> menuIds) {
+//		priceTotalLabel = l;
 		con = new Connector(Users.getRoot());
-
-	}
-	
-	
-	public void total_price(ArrayList<String> roomIds, ArrayList<String[]> menuIds) {
 		
 //		for rooms
 		for(String id: roomIds) {
@@ -68,9 +63,16 @@ public class FetchTotalOrderPrice {
 
 		con.closeConnection();
 		
-		priceTotalLabel.setText(price_total.toString());
-		priceTotalLabel.revalidate();
-		priceTotalLabel.repaint();
+		l.setText(price_total.toString());
+		l.revalidate();
+		l.repaint();
+
 	}
+	
+	
+//	public void total_price(ArrayList<String> roomIds, ArrayList<String[]> menuIds) {
+//		
+//
+//	}
 
 }

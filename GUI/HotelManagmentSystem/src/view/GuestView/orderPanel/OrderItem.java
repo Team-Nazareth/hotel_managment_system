@@ -86,7 +86,7 @@ public class OrderItem implements ActionListener {
     		menuIds  = new FileHandler(FilePaths.menuFile).readMenu();
         	
         	// recalculate and validate price total
-        	new FetchTotalOrderPrice(price_totalValueLabel).total_price(roomIds, menuIds);
+//        	new FetchTotalOrderPrice(price_totalValueLabel, roomIds, menuIds);
         	
         	// remove the item from GUI
         	parentPanel.remove(itemPanel);

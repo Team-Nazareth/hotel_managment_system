@@ -9,6 +9,7 @@ import javax.swing.*;
 import constants.FilePaths;
 // custom packages
 import view.GuestView.GuestMainView;
+import view.ManagerView.ManagerMainView;
 import util.ImageManager;
 import util.ImageManager.*;
 
@@ -164,6 +165,8 @@ public class LoginUI implements ActionListener {
 		access_level.setPreferredSize(new Dimension(200,35));
 		access_level.setBackground(new Color(250,255,255));
 		
+		access_level.setRenderer(new CustomComboBoxRenderer());
+		
 		staffOptionBtn = new JButton("guest?");
 		staffOptionBtn.addActionListener(this);
 		// greeting label
@@ -228,7 +231,8 @@ public class LoginUI implements ActionListener {
 		
 		if(result) {					
 			MainView.panelRemover(theFrame, loginPanel);
-			new GuestMainView(theFrame, auth.getGuestId());		
+			// the 3rd param is for log out
+			new GuestMainView(theFrame, auth.getGuestId(), loginPanel);		
 			MainView.repainter(theFrame);
 		} else {
 			JOptionPane.showMessageDialog(theFrame, "Invalid credientail!", "login failed", JOptionPane.ERROR_MESSAGE);
@@ -243,12 +247,28 @@ public class LoginUI implements ActionListener {
 		// if authorized
 		
 		if(result) {					
-			MainView.panelRemover(theFrame, loginPanel);		
+			MainView.panelRemover(theFrame, loginPanel);
+			new ManagerMainView(theFrame, auth.getStaffId(), loginPanel);
 			MainView.repainter(theFrame);
 		} else {
 			JOptionPane.showMessageDialog(theFrame, "Invalid Credientail! try again", "login failed", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
+	
+	private class CustomComboBoxRenderer extends DefaultListCellRenderer {
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+            if (value != null && value.equals("Manager")) {
+                component.setEnabled(true);
+            } else {
+                component.setEnabled(false); 
+            }
+
+            return component;
+        }
+    }
 	
 	
 

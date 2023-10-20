@@ -1,4 +1,4 @@
-package view.GuestView.invoicePanel;
+package view.ManagerView;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,14 +17,9 @@ import javax.swing.table.JTableHeader;
 
 import Model.Connector;
 import Model.Users;
+import view.GuestView.invoicePanel.CustomTableCellRenderer;
 
-
-class TableInfo {
-	String[] colNames ;
-	String[][] data;
-}
-
-public class InvoicePanel implements ActionListener {
+public class ManageInvoicePanel implements ActionListener {
 	JPanel parentPanel;
 	JButton refreshBtn;
 	JTable invoiceTable;
@@ -33,13 +27,11 @@ public class InvoicePanel implements ActionListener {
 	JScrollPane scrollInvoicePane;
 	Connector con;
 	ResultSet rs;
-	int guestId;
 	
-	public InvoicePanel(JPanel p, int guset_id) {
+	public ManageInvoicePanel(JPanel p) {
 		con = new Connector(Users.getRoot());
 		
 		parentPanel = p;
-		guestId = guset_id;
 		// scroll pane
 		scrollInvoicePane = new JScrollPane(this.renderTable());
 		scrollInvoicePane.setPreferredSize(new Dimension(850,700));
@@ -58,7 +50,7 @@ public class InvoicePanel implements ActionListener {
 	}
 	
 	public JTable renderTable() {
-		TableInfo tableInfo = this.getInvoice(guestId);
+		TableInfo tableInfo = this.getInvoice();
 		
 		model = new DefaultTableModel(tableInfo.data , tableInfo.colNames ) {
             @Override
@@ -82,17 +74,16 @@ public class InvoicePanel implements ActionListener {
 		return invoiceTable;
 	}
 	
-	public TableInfo getInvoice(int guest_id) {
+	public TableInfo getInvoice() {
 		// fetch invoice filter by user_id
-		String query = "{CALL get_generated_invoice(?)}";
+		String query = "SELECT * FROM invoice";
 		
 		ArrayList<String> colNames = 
 				new ArrayList<>(Arrays.asList("invoice_id","guest_id", "invoice_total","invoice_date"));
 		int colSize = colNames.size();
 		ArrayList<String[]> data = new ArrayList<>();
 		
-		Object[] param = {guest_id};
-		rs = con.getProcedureCallResult(query, param);
+		rs = con.getQueryResult(query);
 		
 		try {
 			while(rs.next()) {
@@ -132,8 +123,7 @@ public class InvoicePanel implements ActionListener {
 		int prevNumRows = model.getRowCount();
 		int afterNumRows = 0;
 		
-		TableInfo tableInfo = this.getInvoice(guestId);
-		System.out.println("guest id " +guestId);
+		TableInfo tableInfo = this.getInvoice();
 		
 		DefaultTableModel tempModel = new DefaultTableModel(tableInfo.data , tableInfo.colNames ) {
             @Override

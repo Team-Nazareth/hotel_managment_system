@@ -11,7 +11,7 @@ public class FormValidator {
     		return true;
     	} 
         // regular expression pattern for a valid email address
-        String regexPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        String regexPattern = "^[A-Za-z0-9+_.-].@[A-Za-z0-9.-]+$";
 
         Pattern pattern = Pattern.compile(regexPattern);
 

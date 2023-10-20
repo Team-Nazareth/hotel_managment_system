@@ -19,7 +19,7 @@ public class MainView {
 		JFrame theFrame = new JFrame("Hotel Managment System");
 
 		new LoginUI(theFrame);
-		theFrame.setSize(1030,800);
+		theFrame.setSize(1030,870);
 //		theFrame.pack();
 //		
 		theFrame.setVisible(true);

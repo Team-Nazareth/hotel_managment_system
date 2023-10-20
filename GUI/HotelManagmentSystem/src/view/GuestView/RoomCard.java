@@ -12,7 +12,7 @@ import Model.roomData;
 import constants.FilePaths;
 import util.FileHandler;
 
-class RoomCard extends Card {
+public class RoomCard extends Card {
 	roomData Data;
 	public RoomCard(JPanel p,  roomData data) {
 		super(p);

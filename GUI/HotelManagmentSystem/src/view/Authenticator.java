@@ -163,7 +163,7 @@ public class Authenticator {
 		if(isAuthenticated()) {
 			
 			try  {
-	        	String query = "SELECT staff_id FROM guest where username = ? ;"; 
+	        	String query = "SELECT staff_id FROM staff where username = ? ;"; 
 	       
 	            
 	            Object[] param = {Username};
@@ -172,7 +172,7 @@ public class Authenticator {
 	        	ResultSet resultSet = con.getQueryResult(query, param);
 
 	            if (resultSet.next()) {
-	            	staff_id = resultSet.getInt("guest_id");
+	            	staff_id = resultSet.getInt("staff_id");
 	            }
 	            
 	            con.closeConnection();

@@ -14,7 +14,7 @@ import util.FileHandler;
 import constants.FilePaths;
 
 
-class MenuCard extends Card {
+public class MenuCard extends Card {
 	menuData Data;
 
 	public MenuCard(JPanel p, menuData data) {
